@@ -6,7 +6,7 @@ import (
 	"time"
 
 	"github.com/libp2p/go-libp2p/core/peer" // Use Blake3 for hashing
-	"github.com/theaxiomverse/go-backend/hasher"
+	"github.com/theaxiomverse/go-backend/pkg/crypto/hasher"
 )
 
 // CertificateRole defines the role of a node in the network

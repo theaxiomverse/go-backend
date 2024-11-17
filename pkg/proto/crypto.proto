@@ -1,0 +1,86 @@
+// proto/crypto/blake3.proto
+syntax = "proto3";
+
+package crypto;
+
+option go_package = "pkg/proto/crypto";
+
+// Main Blake3 service
+service Blake3Service {
+    // Standard hash operation
+    rpc Hash(HashRequest) returns (HashResponse) {}
+    
+    // Verify hash
+    rpc Verify(VerifyRequest) returns (VerifyResponse) {}
+    
+    // Streaming operations
+    rpc StreamHash(stream HashRequest) returns (stream HashResponse) {}
+    rpc StreamVerify(stream VerifyRequest) returns (stream VerifyResponse) {}
+    
+    // Certificate operations
+    rpc CreateCertificate(CertificateRequest) returns (CertificateResponse) {}
+    rpc VerifyCertificate(CertificateVerifyRequest) returns (CertificateVerifyResponse) {}
+}
+
+// Basic hash request
+message HashRequest {
+    bytes data = 1;
+    string context = 2;
+    optional int32 chunk_size = 3;
+}
+
+// Hash response
+message HashResponse {
+    bytes hash = 1;
+    string hex = 2;
+    optional int64 bytes_processed = 3;
+    optional int64 total_bytes = 4;
+}
+
+// Verify request
+message VerifyRequest {
+    bytes data = 1;
+    string context = 2;
+    bytes expected_hash = 3;
+}
+
+// Verify response
+message VerifyResponse {
+    bool valid = 1;
+    optional int64 bytes_processed = 2;
+    optional int64 total_bytes = 3;
+}
+
+// Certificate request
+message CertificateRequest {
+    bytes public_key = 1;
+    bytes libp2p_key = 2;
+    repeated string roles = 3;
+    int32 validity_days = 4;
+}
+
+// Certificate response
+message CertificateResponse {
+    bytes certificate = 1;
+    bytes signature = 2;
+    bytes hash = 3;
+}
+
+// Certificate verify request
+message CertificateVerifyRequest {
+    bytes certificate = 1;
+    bytes signature = 2;
+}
+
+// Certificate verify response
+message CertificateVerifyResponse {
+    bool valid = 1;
+    optional string error = 2;
+}
+
+// Progress information
+message Progress {
+    int64 bytes_processed = 1;
+    int64 total_bytes = 2;
+    double percentage = 3;
+}
